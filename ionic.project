@@ -1,0 +1,12 @@
+{
+  "name": "gps",
+  "app_id": "5c70911c",
+  "gulpStartupTasks": [
+    "sass",
+    "watch"
+  ],
+  "watchPatterns": [
+    "www/**/*",
+    "!www/lib/**/*"
+  ]
+}

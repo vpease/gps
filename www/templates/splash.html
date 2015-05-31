@@ -1,0 +1,27 @@
+<ion-view view-title="Tracker">
+    <ion-content has-header="true">
+        <h1>{{splash.accion}}</h1>
+        <b>Posición</b><br>
+        Latitud: {{ posicion.lat }}<br>
+        Longitud: {{ posicion.lon }}</br>
+        <p><b>Fecha: {{ posicion.fecha}}</b></p>
+        <p><b>Batería:</b>{{ posicion.bateria}}</p>
+        <p><b>Mac:</b>{{ posicion.mac }}</p>
+        <p>
+            <button name="capturar"
+                    ng-click = "splash.capturar()">{{splash.butonText}}
+            </button>
+        </p>
+            <b>Frecuencia:</b> {{splash.freq}} milisegundos
+        <div class="item range">
+            <i class="icon ion-volume-low"></i>
+            <input type="range" name="freq"
+                   ng-model="splash.freq"
+                   min = "30000"
+                   max = "100000">
+            <i class="icon ion-volume-high"></i>
+        </div>
+        </p>
+    </p>
+    </ion-content>
+</ion-view>

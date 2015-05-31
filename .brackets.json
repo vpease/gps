@@ -1,0 +1,9 @@
+{
+    "jscodehints.detectedExclusions": [
+        "F:/projects/gps/plugins/cordova-plugin-battery-status/src/firefoxos/BatteryProxy.js",
+        "F:/projects/gps/plugins/cordova-plugin-battery-status/src/tizen/BatteryStatusProxy.js",
+        "F:/projects/gps/www/js/services.js",
+        "F:/projects/gps/plugins/cordova-plugin-battery-status/www/battery.js",
+        "F:/projects/gps/plugins/cordova-plugin-console/www/console-via-logger.js"
+    ]
+}

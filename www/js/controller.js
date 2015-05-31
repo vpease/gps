@@ -1,0 +1,131 @@
+angular.module('controllers',['ngCordova','services','app'])
+.controller('SplashController',function($ionicPlatform,
+                                         $rootScope,
+                                         $scope,
+                                         $timeout,
+                                         $cordovaGeolocation,
+                                         $cordovaDevice,
+                                         $cordovaBackgroundGeolocation,
+                                         Equipo,
+                                         App){
+    $scope.posicion = {
+        lat: '',
+        lon: '',
+        fecha: '',
+        bateria:'',
+        mac: ''
+    };
+    var watch;
+    this.capturando = false;
+    this.butonText = 'Iniciar Captura';
+    this.freq = 30000;
+    this.accion = 'Capturando...';
+    this.mac = '';
+
+    this.capturar = function(){
+        if (this.capturando) {
+            this.butonText = 'Iniciar Captura';
+            this.capturando = false;
+            //watch.clearWatch();
+            $cordovaBackgroundGeolocation.stop();
+        } else {
+            this.butonText = 'Detener Captura';
+            this.capturando = true;
+
+            var watchOptions = {
+                frequency : this.freq,
+                timeout : 3000,
+                enableHighAccuracy : false
+            };
+            var posOptions = {
+                timeout: 3000,
+                enableHighAccuracy : false
+            };
+            var backOptions = {
+                url: 'http://localhost',
+                notificationTitle: 'SuperGPS tracking',
+                notificationText: 'Activo',
+                debug: true,
+                stopOnTerminate: true
+            }
+            /*watch = $cordovaGeolocation.watchPosition(watchOptions);
+            watch.then(null,function(err){
+                console.log('Error: '+ JSON.stringify(err));
+            },function(position){
+                console.log('Posición capturada!');
+                $scope.posicion.lat = Equipo.setLat(position.coords.latitude);
+                $scope.posicion.lon = Equipo.setLon(position.coords.longitude);
+                $scope.posicion.pres = Equipo.setPres(position.coords.accuracy);
+                $scope.posicion.fecha = Equipo.getFecha();
+                $scope.posicion.bateria = Equipo.getBateria();
+                $scope.posicion.mac = Equipo.getMac();
+                console.log('la bateria es: '+Equipo.getBateria());
+                Equipo.save();
+            });*/
+            $cordovaBackgroundGeolocation.configure(backOptions)
+            .then(
+                null,
+                function (err){ console.log(err)},
+                function (location){
+                    console.log('Posición capturada!');
+                    $scope.posicion.lat = Equipo.setLat(position.location.latitude);
+                    $scope.posicion.lon = Equipo.setLon(position.location.longitude);
+                    $scope.posicion.pres = Equipo.setPres(position.location.accuracy);
+                    $scope.posicion.fecha = Equipo.getFecha();
+                    $scope.posicion.bateria = Equipo.getBateria();
+                    $scope.posicion.mac = Equipo.getMac();
+                    console.log('la bateria es: '+Equipo.getBateria());
+                    Equipo.save();
+                }
+            );
+
+        }
+    };
+
+    $ionicPlatform.ready(function(){
+        Equipo.initData();
+        if (ionic.Platform.platform() ==="win32"){
+            Equipo.setMac('01010101010');
+        } else {
+            window.MacAddress.getMacAddress(
+            function(macAddress) {
+                Equipo.setMac(macAddress);
+            },function(fail) {
+                Equipo.setMac($cordovaDevice.getUUID());
+            });
+        };
+
+        $scope.onBatteryStatus = function(result) {
+            //data.init();
+            //data.replicate();
+            $scope.posicion.mac = Equipo.getMac();
+            console.log('El nivel es: ' + result.level);
+            console.log('El id es: '+Equipo.getMac());
+            Equipo.setBateria(result.level);
+            $scope.posicion.bateria = result.level;
+            Equipo.replicate(this.mac);
+        }
+
+        if (!$rootScope.batteryEvtAttached) {
+        // prevent from registering multiple times
+        // Ideally needs to be added in .run()
+        // This is for the sake of example
+
+        window.addEventListener('batterystatus', $scope.onBatteryStatus, false);
+             $rootScope.batteryEvtAttached = true;
+         }
+        }
+    );
+})
+.controller('LoginController',function($ionicHistory,$scope,App){
+    this.user= '';
+    this.pass= '';
+    $ionicHistory.clearHistory();
+    this.data = JSON.stringify(App.getSession());
+    this.login = function(){
+        App.authenticate(this.user,this.pass);
+    };
+})
+.controller('MainController',function($scope,App){
+    $scope.data = JSON.stringify(App.getSession());
+})
