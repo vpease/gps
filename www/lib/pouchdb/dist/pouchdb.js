@@ -1,5 +1,5 @@
 //    PouchDB 3.5.0
-//    
+//
 //    (c) 2012-2015 Dale Harvey and the PouchDB team
 //    PouchDB may be freely distributed under the Apache license, version 2.0.
 //    For all details and documentation:
@@ -413,7 +413,7 @@ AbstractPouchDB.prototype._compact = function (opts, callback) {
     .on('complete', onComplete)
     .on('error', callback);
 };
-/* Begin api wrappers. Specific functionality to storage belongs in the 
+/* Begin api wrappers. Specific functionality to storage belongs in the
    _[method] */
 AbstractPouchDB.prototype.get =
   utils.adapterFun('get', function (id, opts, callback) {
@@ -1355,7 +1355,7 @@ function HttpPouch(opts, callback) {
   }));
 
   // Add the document given by doc (in JSON string format) to the database
-  // given by host. This does not assume that doc is a new document 
+  // given by host. This does not assume that doc is a new document
   // (i.e. does not have a _id or a _rev field.)
   api.post = utils.adapterFun('post', function (doc, opts, callback) {
     // If no options were given, set the callback to be the second parameter
@@ -1788,7 +1788,7 @@ function HttpPouch(opts, callback) {
       source.close();
       utils.call(opts.complete, err);
     }
-    
+
   };
 
   api._useSSE = false;
@@ -5484,7 +5484,7 @@ Changes.prototype.filterChanges = function (opts) {
         return;
       }
       if (ddoc && ddoc.views && ddoc.views[viewName[1]]) {
-        
+
         var filter = evalView(ddoc.views[viewName[1]].map);
         opts.filter = filter;
         self.doChanges(opts);
@@ -5683,7 +5683,7 @@ function PouchDB(name, opts, callback) {
       delete resp.then;
       fulfill(resp);
     };
-  
+
     opts = utils.clone(opts);
     var originalName = opts.name || name;
     var backend, error;
@@ -5697,7 +5697,7 @@ function PouchDB(name, opts, callback) {
         }
 
         backend = PouchDB.parseAdapter(originalName, opts);
-        
+
         opts.originalName = originalName;
         opts.name = backend.name;
         if (opts.prefix && backend.adapter !== 'http' &&
@@ -6882,7 +6882,7 @@ Dual licensed under the MIT and GPL licenses.
  *   >>> Math.uuid(15)     // 15 character ID (default base=62)
  *   "VcydxgltxrVZSTV"
  *
- *   // Two arguments - returns ID of the specified length, and radix. 
+ *   // Two arguments - returns ID of the specified length, and radix.
  *   // (Radix must be <= 62)
  *   >>> Math.uuid(8, 2)  // 8 character ID (base=2)
  *   "01001010"
@@ -10082,7 +10082,7 @@ function all(iterable) {
   var resolved = 0;
   var i = -1;
   var promise = new Promise(INTERNAL);
-  
+
   while (++i < len) {
     allResolver(iterable[i], i);
   }
@@ -10191,7 +10191,7 @@ Promise.prototype.then = function (onFulfilled, onRejected) {
   }
   var promise = new Promise(INTERNAL);
 
-  
+
   if (this.state !== states.PENDING) {
     var resolver = this.state === states.FULFILLED ? onFulfilled: onRejected;
     unwrap(promise, resolver, this.outcome);
@@ -10253,7 +10253,7 @@ function race(iterable) {
   var resolved = 0;
   var i = -1;
   var promise = new Promise(INTERNAL);
-  
+
   while (++i < len) {
     resolver(iterable[i]);
   }
@@ -10281,8 +10281,8 @@ var handlers = _dereq_(48);
 module.exports = reject;
 
 function reject(reason) {
-	var promise = new Promise(INTERNAL);
-	return handlers.reject(promise, reason);
+    var promise = new Promise(INTERNAL);
+    return handlers.reject(promise, reason);
 }
 },{"46":46,"48":48,"50":50}],54:[function(_dereq_,module,exports){
 'use strict';
@@ -10345,7 +10345,7 @@ function safelyResolveThenable(self, thenable) {
   function tryToUnwrap() {
     thenable(onSuccess, onError);
   }
-  
+
   var result = tryCatch(tryToUnwrap);
   if (result.status === 'error') {
     onError(result.value);
@@ -10543,7 +10543,7 @@ exports.install = function (t) {
 
 var MIN_MAGNITUDE = -324; // verified by -Number.MIN_VALUE
 var MAGNITUDE_DIGITS = 3; // ditto
-var SEP = ''; // set to '_' for easier debugging 
+var SEP = ''; // set to '_' for easier debugging
 
 var utils = _dereq_(65);
 
@@ -11269,7 +11269,7 @@ module.exports = function (opts) {
         db.auto_compaction = true;
         var view = {
           name: depDbName,
-          db: db, 
+          db: db,
           sourceDB: sourceDB,
           adapter: sourceDB.adapter,
           mapFun: mapFun,
@@ -11315,7 +11315,7 @@ var toIndexableString = pouchCollate.toIndexableString;
 var normalizeKey = pouchCollate.normalizeKey;
 var createView = _dereq_(68);
 var evalFunc = _dereq_(69);
-var log; 
+var log;
 /* istanbul ignore else */
 if ((typeof console !== 'undefined') && (typeof console.log === 'function')) {
   log = Function.prototype.bind.call(console.log, console);

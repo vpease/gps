@@ -22,9 +22,19 @@ angular.module('tracker', ['ionic',
 })
 
 .run(function($rootScope,$location,App){
-    $rootScope.$on('Location:Ok',function(location){
-        App.getPosition(location);
-        $location.url("/login");
+    $rootScope.$on('Location:Ok',function(event,args){
+        App.getPosition(args);
+        $location.url("/login/Bienvenido");
+    });
+    $rootScope.$on('auth:ok',function(event,args){
+        App.replicate(args.user);
+        $location.url("/menu");
+    });
+    $rootScope.$on('auth:ko',function(event,args){
+        $location.url("/login/"+args.message);
+    });
+    $rootScope.$on('db:init',function(event,args){
+
     });
 })
 
@@ -40,11 +50,16 @@ angular.module('tracker', ['ionic',
       }
   })
   .state('login',{
-      url:"/login",
+      url:"/login/:msg",
       views: {
           "home":{
               templateUrl: "templates/login.html",
               controller: "LoginController as login"
+          }
+      },
+      resolve: {
+          msg: function($stateParams){
+              return $stateParams.msg;
           }
       }
   })
@@ -54,6 +69,12 @@ angular.module('tracker', ['ionic',
           "home":{
               templateUrl: "templates/main.html",
               controller: "MainController as main"
+          }
+      },
+      resolve:{
+          papers: function(data){
+              res = data.getPapers();
+              return res;
           }
       }
   })

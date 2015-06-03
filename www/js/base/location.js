@@ -25,7 +25,7 @@ angular.module('location',['ngCordova','Super'])
         status = false;
     };
     Location.prototype.setPosition = function(position){
-        currentLocation._id = 'loc_'+Super.getDate("mil");
+        currentLocation._id = 'loc_'+Super.getDate().mil;
         currentLocation.lat = position.coords.latitude;
         currentLocation.lon = position.coords.longitude;
         currentLocation.alt = position.coords.altitude;

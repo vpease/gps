@@ -1,8 +1,14 @@
 <ion-view view-title="Operaciones">
     <ion-content has-header="true">
-        <h1>Operaciones</h1>
-        <p>
-            {{data}}
-        </p>
+        <div class="row" ng-repeat="paper in papers" ng-if="$index % 3 ==0">
+            <div class="col" ng-repeat="paper in papers.slice($index,$index+3)">
+               <button class="button button-block button-large button-stable"
+                       ng-click='click(paper._id)'>
+                   <img class="avatar"
+                        ng-src='img/papers/{{paper.avatar}}'
+                        alt={{paper.nombre}}>
+                </button>
+            </div>
+        </div>
     </ion-content>
 </ion-view>

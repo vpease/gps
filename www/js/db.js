@@ -1,21 +1,24 @@
 /**
  * Created by vpease on 20/12/2014.
  */
-angular.module('db',['ngCordova'])
-.factory('DB',function($q,$rootScope,$timeout,$cordovaDialogs,$http) {
-        var self = this;
-        var db;
-        self.remoteserver = 'https://mengthaddedgatiamodisele:gpaA4VKby33poQ7dVEtms4D8@supermio.cloudant.com/supertrack';
+angular.module('db',['Params'])
+.factory('DB',function($q,$rootScope,$timeout,$cordovaDialogs,$http,params) {
+    var self = this;
+    var dbName = params.getDbName();
+    var dbTimeOut = params.getDbTimeOut();
+    var db;
+    var user;
+        self.remoteserver = params.getDbUrl();
         self.init = function() {
             if (!db) {
                 console.log('database is closed');
 
-                db = new window.PouchDB('supertrack',{
+                db = new window.PouchDB(dbName,{
                     adapter: 'websql',
                     size: 50,
                     auto_compaction:true});
                 if (!db.adapter){
-                    db  = new window.PouchDB('supertrack',{
+                    db  = new window.PouchDB(dbName,{
                         size: 50,
                         auto_compation: true
                     });
@@ -25,7 +28,8 @@ angular.module('db',['ngCordova'])
                 }
                 db.compact({},function(){
                     console.log('db compactada');
-                    //self.replicate();
+                    //PouchDB.debug.enable('*');
+                    $rootScope.$broadcast('db:init');
                 });
 
                 //console.log('ya se grabó');
@@ -66,6 +70,7 @@ angular.module('db',['ngCordova'])
             }
         };
         self.replicate = function(mac){
+            self.user = mac;
             var sync = db.replicate.to(
                 self.remoteserver,
                 {live:false, retry:true})
@@ -75,7 +80,7 @@ angular.module('db',['ngCordova'])
                 })
                 .on('change',function(info){
                     console.log('Cambios en la base de datos'+JSON.stringify(info));
-                    angular.forEach(info.docs,function(doc,key){
+                    /*angular.forEach(info.docs,function(doc,key){
                         console.log('Enviando datos al WS');
                         var url = "http://www.victorpease.com/gps/index.php/persona/posicion?";
                     url = url + "lat=" + doc.lat;
@@ -92,16 +97,20 @@ angular.module('db',['ngCordova'])
                         .error(function(data,status,headers,config){
                         console.log('WS KO: ' + status);
                     })
-                    })
+                    })*/
 
                 }).on('complete',function(info){
-                    var timeout = 60000;
-                    console.log('Sync data complete');//+JSON.stringify(info));
-                    if (info.docs_written>0) timeout=60000;
+                    var timeOut;
+                    if (info.docs_written>0){
+                        timeOut = dbTimeOut*10;
+                    } else {
+                        timeOut = dbTimeOut;
+                    }
+                    console.log('Sync data complete.Regreso en: '+timeOut);//+JSON.stringify(info));
                     $timeout(function(){
                         console.log('sync nuevamente');
-                        self.replicate();
-                    },timeout);
+                        self.replicate(self.user);
+                    },timeOut);
                     $rootScope.$broadcast('db:uptodate');
                 }).on('uptodate',function(info){
                     //console.log('Actualizado datos'+JSON.stringify(info));

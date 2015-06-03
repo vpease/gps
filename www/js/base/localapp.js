@@ -1,5 +1,5 @@
 angular.module('app',['session','db'])
-.factory('App',function($state,Session,data){
+.factory('App',function($state,Session,data,DB){
     var currentApp = {
         _id : '',
         name : '',
@@ -21,9 +21,7 @@ angular.module('app',['session','db'])
             currentApp.company = 'Supermio';
             currentApp._id = 'SuperGPS'
             currentSession = new Session();
-        },
-        getSession : function(){
-            return currentSession.get();
+            DB.init();
         },
         authenticate : function(user,pass){
             if (currentSession.setUsuario(user,pass,'test','supermio')){
@@ -33,8 +31,16 @@ angular.module('app',['session','db'])
             };
 
         },
+        replicate : function(user){
+            console.log('Voy a replicar');
+            DB.replicate(user);
+        },
         getPosition : function(location){
             currentSession.currentLocation = location;
+        },
+        saveClick : function(idPaper){
+            var temp = currentSession.getVenta(idPaper);
+            DB.put(temp);
         }
     };
 });

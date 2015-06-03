@@ -23,7 +23,20 @@ $stable: #ffb800;
 .content-stable{
   background-color: $stable
 }
-
+//div {
+    //width: 100%;
+    //background: #acf;
+    //vertical-align: middle;
+    //white-space: nowrap;
+    //overflow: visible;
+//}
+.avatar {
+ width: 100%;
+ padding: 0;
+ margin: 0;
+ vertical-align: middle;
+ align-content: center;
+}
 // Include all of Ionic
 @import "www/lib/ionic/scss/ionic";
 

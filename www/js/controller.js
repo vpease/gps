@@ -84,7 +84,8 @@ angular.module('controllers',['ngCordova','services','app'])
 
     $ionicPlatform.ready(function(){
         Equipo.initData();
-        if (ionic.Platform.platform() ==="win32"){
+        var platform = ionic.Platform.platform();
+        if (platform  ==="win32" || platform ==="win64" ){
             Equipo.setMac('01010101010');
         } else {
             window.MacAddress.getMacAddress(
@@ -117,15 +118,23 @@ angular.module('controllers',['ngCordova','services','app'])
         }
     );
 })
-.controller('LoginController',function($ionicHistory,$scope,App){
+.controller('LoginController',function($ionicHistory,$scope,App,msg){
+    this.msg = msg;
     this.user= '';
     this.pass= '';
     $ionicHistory.clearHistory();
-    this.data = JSON.stringify(App.getSession());
     this.login = function(){
         App.authenticate(this.user,this.pass);
     };
 })
-.controller('MainController',function($scope,App){
-    $scope.data = JSON.stringify(App.getSession());
+.controller('MainController',function($scope,App,papers){
+    $scope.papers = papers;
+    $scope.numColumns = 4;
+    $scope.rows = [];
+    $scope.cols = [];
+    $scope.rows.length = Math.ceil($scope.papers.length / $scope.numColumns);
+    $scope.cols.length = $scope.numColumns;
+    $scope.click = function(id){
+        App.saveClick(id);
+    };
 })

@@ -12,10 +12,11 @@ angular.module('device',['ngCordova','ionic','Super'])
         type : 'device'
     };
     var Device = function(){
-        currentDevice._id = "dev_"+Super.getDate("mil")
+        currentDevice._id = "dev_"+Super.getDate().mil;
     };
     Device.prototype.getInfo = function(){
-        if (ionic.Platform.platform()==="win32"){
+        var platform = ionic.Platform.platform();
+        if (platform ==="win32" || platform ==="win64"){
             currentDevice.cordova = '4';
             currentDevice.model = 'PC';
             currentDevice.platform = 'Win32';
@@ -29,6 +30,9 @@ angular.module('device',['ngCordova','ionic','Super'])
             currentDevice.version = $cordovaDevice.getVersion();
         };
 
+        return this;
+    };
+    Device.prototype.export = function(){
         return currentDevice;
     };
     return Device;
