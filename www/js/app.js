@@ -23,17 +23,30 @@ angular.module('tracker', ['ionic',
 
 .run(function($rootScope,$location,App){
     $rootScope.$on('Location:Ok',function(event,args){
-        App.getPosition(args);
-        $location.url("/login/Bienvenido");
+        App.getPosition(args.pos);
+        if (args.retries===0){
+			console.log('Posición Ok sin problemas');
+			$location.url("/login/Bienvenido");
+		}        
+    });
+    $rootScope.$on('Location:Ko',function(event,args){
+        App.retryLocation();
+        if (args.retries===0){
+			console.log('Posición Ko con problemas');
+			$location.url("/login/Bienvenido");
+		}
+        
     });
     $rootScope.$on('auth:ok',function(event,args){
         App.replicate(args.user);
-        $location.url("/menu");
+        $location.url("/menu/");
     });
     $rootScope.$on('auth:ko',function(event,args){
         $location.url("/login/"+args.message);
     });
     $rootScope.$on('db:init',function(event,args){
+    });
+    $rootScope.$on('db:uptodate',function(event,args){
 
     });
 })
@@ -64,7 +77,7 @@ angular.module('tracker', ['ionic',
       }
   })
   .state('main',{
-      url:"/menu",
+      url:"/menu/",
       views: {
           "home":{
               templateUrl: "templates/main.html",

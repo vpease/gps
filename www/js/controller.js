@@ -1,4 +1,4 @@
-angular.module('controllers',['ngCordova','services','app'])
+angular.module('controllers',['ngCordova','services','app','Super'])
 .controller('SplashController',function($ionicPlatform,
                                          $rootScope,
                                          $scope,
@@ -7,7 +7,8 @@ angular.module('controllers',['ngCordova','services','app'])
                                          $cordovaDevice,
                                          $cordovaBackgroundGeolocation,
                                          Equipo,
-                                         App){
+                                         App,
+                                        Super){
     $scope.posicion = {
         lat: '',
         lon: '',
@@ -125,9 +126,13 @@ angular.module('controllers',['ngCordova','services','app'])
     $ionicHistory.clearHistory();
     this.login = function(){
         App.authenticate(this.user,this.pass);
+        this.pass='';
     };
 })
-.controller('MainController',function($scope,App,papers){
+.controller('MainController',function($scope,
+                                       $cordovaDialogs,
+                                       App,
+                                       papers){
     $scope.papers = papers;
     $scope.numColumns = 4;
     $scope.rows = [];
@@ -136,5 +141,15 @@ angular.module('controllers',['ngCordova','services','app'])
     $scope.cols.length = $scope.numColumns;
     $scope.click = function(id){
         App.saveClick(id);
+        $cordovaDialogs.beep();
     };
+    $scope.salir = function(){
+        App.salir();
+    };
+
+    $scope.$on('db:uptodate',function(event,args){
+        App.setSyncStatus('Ok:');
+        $scope.syncStatus = App.getSyncStatus(args.msg);
+        $scope.$apply();
+    });
 })

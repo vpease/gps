@@ -107,11 +107,12 @@ angular.module('db',['Params'])
                         timeOut = dbTimeOut;
                     }
                     console.log('Sync data complete.Regreso en: '+timeOut);//+JSON.stringify(info));
+                    $rootScope.$broadcast('db:uptodate',{msg:'Sync Ok'});
                     $timeout(function(){
                         console.log('sync nuevamente');
                         self.replicate(self.user);
                     },timeOut);
-                    $rootScope.$broadcast('db:uptodate');
+
                 }).on('uptodate',function(info){
                     //console.log('Actualizado datos'+JSON.stringify(info));
                     //$rootScope.$broadcast('db:uptodate');

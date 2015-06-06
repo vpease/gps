@@ -1,11 +1,12 @@
-angular.module('app',['session','db'])
-.factory('App',function($state,Session,data,DB){
+angular.module('app',['session','db','Super'])
+.factory('App',function($state,Session,data,DB,Super){
     var currentApp = {
         _id : '',
         name : '',
         author : '',
         company : '',
-        type : 'app'
+        type : 'app',
+        syncStatus:''
     };
     var currentSession;
 
@@ -35,12 +36,25 @@ angular.module('app',['session','db'])
             console.log('Voy a replicar');
             DB.replicate(user);
         },
+		retyLocation : function(){
+            currentSession.retryLocation();
+        },
         getPosition : function(location){
             currentSession.currentLocation = location;
         },
         saveClick : function(idPaper){
             var temp = currentSession.getVenta(idPaper);
             DB.put(temp);
+        },
+        setSyncStatus: function(message){
+            currentApp.syncStatus = message + Super.getDate().long;
+        },
+        getSyncStatus: function(){
+            return currentApp.syncStatus;
+        },
+        salir : function(){
+            $state.go('splash');
+            this.initApp();
         }
     };
 });

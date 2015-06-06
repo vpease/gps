@@ -18,7 +18,7 @@ angular.module('session',['user','location','device','Super'])
         created = fecha.long;
         createdMil = fecha.mil;
         currentDevice = getDevice();
-        currentLocation = getLocation();
+        currentLocation = getLocation(0);
         status ='Iniciado';
         _id = "session_"+fecha.mil +'_'+ currentDevice.uuid;
     };
@@ -51,22 +51,25 @@ angular.module('session',['user','location','device','Super'])
         venta.device = currentDevice.export();
         return venta;
     };
+	Session.prototype.retryLocation = function(){
+        currentLocation = getLocation(1);
+    };
     function getDevice(){
         var temp = new Device();
         return temp.getInfo();
     };
-    function getLocation() {
+    function getLocation(retry) {
         var temp = new Location();
         $rootScope.$broadcast('Location:Search');
         temp.getNewPosition().then(function(position){
             temp.setPosition(position);
             status = 'Valido';
             currentLocation = temp.getCurrent();
-            console.log('La sesion ya tiene posicion: ');
-            $rootScope.$broadcast('Location:Ok',temp);
+            console.log('La sesion ya tiene posicion: '+retry);
+            $rootScope.$broadcast('Location:Ok', { pos:temp, retries:retry});
         }, function(err){
-            this.getLocation();
-            console.log('Error en la posición: '+err);
+            console.log('Error en la posición: '+retry+' //'+JSON.stringify(err));
+            $rootScope.$broadcast('Location:Ko',{pos:null,retries:retry});
         });
         return new Location().getCurrent();
     };
