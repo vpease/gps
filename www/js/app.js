@@ -25,23 +25,25 @@ angular.module('tracker', ['ionic',
     $rootScope.$on('Location:Ok',function(event,args){
         App.getPosition(args.pos);
         if (args.retries===0){
-			console.log('Posición Ok sin problemas');
-			$location.url("/login/Bienvenido");
-		}        
+            console.log('Posición Ok sin problemas');
+            $location.url("/login/Bienvenido");
+        }
     });
     $rootScope.$on('Location:Ko',function(event,args){
-        App.retryLocation();
+        App.retyLocation();
         if (args.retries===0){
-			console.log('Posición Ko con problemas');
-			$location.url("/login/Bienvenido");
-		}
-        
+            console.log('Posición Ko con problemas');
+            $location.url("/login/Bienvenido");
+        }
+
     });
     $rootScope.$on('auth:ok',function(event,args){
         App.replicate(args.user);
+        console.log('Auth.error: '+args.message);
         $location.url("/menu/");
     });
     $rootScope.$on('auth:ko',function(event,args){
+        console.log('Auth.error: '+args.message);
         $location.url("/login/"+args.message);
     });
     $rootScope.$on('db:init',function(event,args){

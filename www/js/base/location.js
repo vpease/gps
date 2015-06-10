@@ -1,13 +1,14 @@
-angular.module('location',['ngCordova','Super'])
-.factory('Location',function($cordovaGeolocation,Super){
+angular.module('location',['ngCordova','Super','Params'])
+.factory('Location',function($cordovaGeolocation,params,Super){
     var currentPosOptions = {
-        timeout : 3000,
-        enableHighAccuracy : false
+        timeout : params.getPosTimeOut(),
+        enableHighAccuracy : params.getPosHighAcc(),
+        maximumAge: params.getPosMaxAge()
     }
     var currentWatchOptions = {
-        frequency : 1000,
-        timeout : 3000,
-        enableHighAccuracy : false
+        frequency : params.getPosWatchFreq(),
+        timeout : params.getPosTimeOut(),
+        enableHighAccuracy : params.getPosHighAcc()
     }
     var currentLocation = {
         _id : '',

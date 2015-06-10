@@ -71,7 +71,8 @@ angular.module('db',['Params'])
         };
         self.replicate = function(mac){
             self.user = mac;
-            var sync = db.replicate.to(
+            if (params.getDbInserts()>0){
+                var sync = db.replicate.to(
                 self.remoteserver,
                 {live:false, retry:true})
                 .on('paused',function(info){
@@ -101,17 +102,14 @@ angular.module('db',['Params'])
 
                 }).on('complete',function(info){
                     var timeOut;
-                    if (info.docs_written>0){
-                        timeOut = dbTimeOut*10;
-                    } else {
-                        timeOut = dbTimeOut;
-                    }
+                    timeOut= params.getDbTimeOut();
                     console.log('Sync data complete.Regreso en: '+timeOut);//+JSON.stringify(info));
                     $rootScope.$broadcast('db:uptodate',{msg:'Sync Ok'});
                     $timeout(function(){
                         console.log('sync nuevamente');
-                        self.replicate(self.user);
+                            self.replicate(self.user);
                     },timeOut);
+                    params.resetDbInserts();
 
                 }).on('uptodate',function(info){
                     //console.log('Actualizado datos'+JSON.stringify(info));
@@ -119,6 +117,16 @@ angular.module('db',['Params'])
                 }).on('error',function(err){
                     console.log('Error en sync datos: '+JSON.stringify(err));
                 })
+            } else {
+                var timeOut;
+                timeOut= params.getDbTimeOut();
+                console.log('Nada que sincronizar.Regreso en: '+timeOut);//+JSON.stringify(info));
+                $rootScope.$broadcast('db:uptodate',{msg:'Sync Ok'});
+                $timeout(function(){
+                    console.log('sync nuevamente');
+                    self.replicate(self.user);
+                },timeOut);
+            }
         };
         self.getView = function(view,options){
             return db.query(view,options);
@@ -177,6 +185,7 @@ angular.module('db',['Params'])
                     }
                 }
             });
+            params.putDbInserts();
         };
         self.bulk = function(objects){
             if (!db){

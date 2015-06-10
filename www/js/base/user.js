@@ -39,12 +39,12 @@ angular.module('user',['Super','Params'])
     User.prototype.authenticate = function() {
         var self = this;
         var authError;
-        var param ={
+        var auth ={
             include_docs: true,
             key: currentUser.user.toLowerCase()
         };
         var request = {
-            url: params.getUrlAPI(param),
+            url: params.getUrlAPI(auth),
             method: 'GET'
         };
 
@@ -79,8 +79,8 @@ angular.module('user',['Super','Params'])
                 $rootScope.$broadcast('auth:ko',authError);
             }
         })
-        .error(function(err){
-            console.log(JSON.stringify(err));
+        .error(function(data,status,headers,config){
+            console.log('Error en http: '+data + ' status: '+status+' headers:'+headers+' config:'+config);
         });
         return this;
     };
